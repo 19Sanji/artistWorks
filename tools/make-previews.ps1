@@ -1,8 +1,8 @@
 # Готовит картинки для сайта. Исходники не изменяются и на сайт не попадают.
-#   assets/thumbs/<slug>/<name>.jpg  — превью для сетки (ширина до 900 px)
-#   assets/full/<slug>/<name>.jpg    — для лайтбокса (длинная сторона до 2400 px)
+#   public/assets/thumbs/<slug>/<name>.jpg — превью для сетки (ширина до 900 px)
+#   public/assets/full/<slug>/<name>.jpg   — для лайтбокса (длинная сторона до 2400 px)
 # Имена файлов приводятся к латинице, чтобы пути не ломались на хостинге.
-# В конце выводит строки для списка CATEGORIES в index.html.
+# В конце выводит строки для списка работ в src/data/categories.js.
 # Запуск из корня проекта:  pwsh tools/make-previews.ps1
 
 Add-Type -AssemblyName System.Drawing
@@ -70,10 +70,10 @@ foreach ($dir in $folders.Keys) {
     $name = Get-SafeName ([IO.Path]::GetFileNameWithoutExtension($f.Name))
 
     $tw = [Math]::Min(900, $W); $th = [int][Math]::Round($H * $tw / $W)
-    Save-Resized $img $tw $th "assets/thumbs/$slug/$name.jpg"
+    Save-Resized $img $tw $th "public/assets/thumbs/$slug/$name.jpg"
 
     $k = [Math]::Min([double]1, 2400.0 / [Math]::Max($W, $H))
-    Save-Resized $img ([int]($W * $k)) ([int]($H * $k)) "assets/full/$slug/$name.jpg"
+    Save-Resized $img ([int]($W * $k)) ([int]($H * $k)) "public/assets/full/$slug/$name.jpg"
 
     $img.Dispose()
     $lines[$slug] += "      ['$name', $tw, $th],"
@@ -81,5 +81,5 @@ foreach ($dir in $folders.Keys) {
   }
 }
 
-Write-Host "`nСтроки для CATEGORIES в index.html (порядок задаётся вручную):"
+Write-Host "`nСтроки для src/data/categories.js (порядок задаётся вручную):"
 foreach ($slug in $lines.Keys) { Write-Host "--- $slug"; $lines[$slug] | ForEach-Object { Write-Host $_ } }

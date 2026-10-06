@@ -1,42 +1,49 @@
 # Портфолио — Альмира Аминева
 
-Одностраничный сайт-портфолио: `index.html` + картинки в `assets/`. Сборка не нужна.
+Сайт-портфолио на React + Vite.
 
-## Что публикуется
+- Сайт: <https://19sanji.github.io/artistWorks/>
+- Репозиторий: <https://github.com/19Sanji/artistWorks>
+
+## Структура
 
 | Путь | Что это |
 |---|---|
-| `index.html` | сайт целиком (стили и скрипты внутри) |
-| `assets/thumbs/` | превью для сетки (до 900 px) |
-| `assets/full/` | версии для просмотра в лайтбоксе (до 2400 px) |
-| `assets/main.jpg` | фото на первом экране |
-| `assets/og.jpg` | картинка для превью ссылки в Telegram и соцсетях |
-| `tools/make-previews.ps1` | скрипт, который делает картинки для `assets/` из исходников |
+| `index.html` | точка входа: мета-теги, шрифты, превью для соцсетей |
+| `src/App.jsx` | страница целиком: собирает секции и лайтбокс |
+| `src/components/` | секции (`Hero`, `About`, `Gallery`, `Contact`…), `Lightbox`, `Reveal` — анимация появления |
+| `src/data/categories.js` | **список работ и категорий** — порядок здесь = порядок на сайте |
+| `src/styles.css` | все стили |
+| `public/assets/thumbs/` | превью для сетки (до 900 px) |
+| `public/assets/full/` | версии для лайтбокса (до 2400 px) |
+| `public/assets/main.jpg`, `og.jpg` | фото на первом экране и картинка для превью ссылки |
+| `tools/make-previews.ps1` | делает картинки для `public/assets/` из исходников |
+| `.github/workflows/deploy.yml` | автоматическая сборка и публикация на GitHub Pages |
 
 Исходные папки (`Фон`, `персы`, `концепт`, `Книга`, `Дополнительно`) и `main.jpg` в корне
 исключены через `.gitignore`: в репозиторий и на сайт они не попадают.
 
-## Публикация на GitHub Pages
+## Запуск на компьютере
 
-Репозиторий: <https://github.com/19Sanji/artistWorks>
-Адрес сайта: <https://19sanji.github.io/artistWorks/>
+Нужен [Node.js](https://nodejs.org) 20 или новее.
 
-1. Отправьте файлы на GitHub из папки проекта:
-   ```bash
-   git commit -m "Портфолио"
-   git push -u origin main
-   ```
-   Remote настроен на SSH (`git@github.com:19Sanji/artistWorks.git`). Если SSH-ключ
-   не добавлен в GitHub, переключитесь на HTTPS — Git сам откроет окно входа:
-   ```bash
-   git remote set-url origin https://github.com/19Sanji/artistWorks.git
-   ```
-2. На GitHub: **Settings → Pages → Build and deployment → Source: Deploy from a branch**,
-   ветка `main`, папка `/ (root)` → **Save**.
-3. Через 1–2 минуты сайт откроется по адресу выше.
+```bash
+npm install      # один раз — установить зависимости
+npm run dev      # сайт с автообновлением: http://localhost:5173/artistWorks/
+npm run build    # собрать в папку dist/
+npm run preview  # посмотреть собранную версию
+```
 
-Адрес сайта уже прописан в тегах `og:url` и `og:image` в `index.html` — если переименуете
-репозиторий, поменяйте его и там, иначе Telegram не покажет картинку в превью ссылки.
+## Публикация
+
+Сайт собирается и публикуется автоматически при каждом `git push` в ветку `main`
+(GitHub Actions, файл `.github/workflows/deploy.yml`). Ход сборки виден во вкладке **Actions**
+репозитория; через 1–2 минуты после push изменения появляются на сайте.
+
+Настройка (один раз): **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+
+Адрес сайта прописан в `vite.config.js` (`base`) и в тегах `og:url`/`og:image` в `index.html` —
+если переименуете репозиторий, поменяйте его в обоих местах.
 
 ## Как добавить или убрать работу
 
@@ -45,15 +52,14 @@
    ```powershell
    pwsh tools/make-previews.ps1
    ```
-   Скрипт обновит `assets/thumbs` и `assets/full` и выведет строки вида
+   Скрипт обновит `public/assets/thumbs` и `public/assets/full` и выведет строки вида
    `['имя-файла', 900, 505],` для каждой категории.
-3. Вставьте строку новой работы в список `CATEGORIES` в `index.html` — в том месте,
-   где она должна стоять. Порядок в списке = порядок на сайте.
-4. Чтобы убрать работу с сайта, удалите её строку из `CATEGORIES`
+3. Вставьте строку новой работы в `src/data/categories.js` — в том месте, где она должна стоять.
+4. Чтобы убрать работу с сайта, удалите её строку из `src/data/categories.js`
    (и, при желании, добавьте имя исходника в список `$skip` в скрипте).
-5. Закоммитьте и отправьте изменения:
+5. Отправьте изменения — сайт обновится сам:
    ```bash
-   git add .
+   git add -A
    git commit -m "Новые работы"
    git push
    ```

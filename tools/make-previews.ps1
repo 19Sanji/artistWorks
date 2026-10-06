@@ -22,6 +22,7 @@ $folders = [ordered]@{
 $skip = @(
   '324136b6-2101-4d74-8050-10b9ef888330.png'
   '47c7ed88-591d-4685-a1cb-c841ca718d3b.jpeg'
+  '7b6aa496-6084-4e67-9933-275e70b3d8de.jpeg'
 )
 
 $codec = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object MimeType -eq 'image/jpeg'
